@@ -151,6 +151,11 @@ function UpdateSmoothedMovementDirection ()
 		movingBack = true;
 	else
 		movingBack = false;
+        
+    if (v == 0 && h == 0){
+        leftParticles.Stop();
+        rightParticles.Stop();
+    }
 	
 	var wasMoving = isMoving;
 	isMoving = Mathf.Abs (h) > 0.1 || Mathf.Abs (v) > 0.1;
@@ -194,21 +199,34 @@ function UpdateSmoothedMovementDirection ()
 	
 		_characterState = CharacterState.Idle;
 		
+        
 		// Pick speed modifier
 		if (Input.GetKey (KeyCode.LeftShift) || Input.GetKey (KeyCode.RightShift))
 		{
 			targetSpeed *= runSpeed;
 			_characterState = CharacterState.Running;
+            leftParticles.Play();
+            rightParticles.Play();
+            leftParticles.playbackSpeed = 1.5*leftParticles.startSpeed;
+            rightParticles.playbackSpeed = 1.5*rightParticles.startSpeed;
 		}
 		else if (Time.time - trotAfterSeconds > walkTimeStart)
 		{
 			targetSpeed *= trotSpeed;
 			_characterState = CharacterState.Trotting;
+            leftParticles.Play();
+            rightParticles.Play();
+            leftParticles.playbackSpeed = leftParticles.startSpeed;
+            rightParticles.playbackSpeed = rightParticles.startSpeed;
 		}
 		else
 		{
 			targetSpeed *= walkSpeed;
 			_characterState = CharacterState.Walking;
+            leftParticles.Play();
+            rightParticles.Play();
+            leftParticles.playbackSpeed = leftParticles.startSpeed;
+            rightParticles.playbackSpeed = rightParticles.startSpeed;
 		}
 		
 		moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, curSmooth);
@@ -320,9 +338,7 @@ function Update() {
 	var movement = moveDirection * moveSpeed + Vector3 (0, verticalSpeed, 0) + inAirVelocity;
 	movement *= Time.deltaTime;
     
-    // not quite working
-	//leftParticles.playbackSpeed = (movement.x/12)*leftParticles.startSpeed;
-    //rightParticles.playbackSpeed = (movement.x/12)*rightParticles.startSpeed;
+
     
 	// Move the controller
 	var controller : CharacterController = GetComponent(CharacterController);
@@ -351,11 +367,12 @@ function Update() {
 			{
 				if(_characterState == CharacterState.Running) {
 					_animation[runAnimation.name].speed = Mathf.Clamp(controller.velocity.magnitude, 0.0, runMaxAnimationSpeed);
-					_animation.CrossFade(runAnimation.name);	
+					_animation.CrossFade(runAnimation.name);                 
 				}
 				else if(_characterState == CharacterState.Trotting) {
 					_animation[walkAnimation.name].speed = Mathf.Clamp(controller.velocity.magnitude, 0.0, trotMaxAnimationSpeed);
 					_animation.CrossFade(walkAnimation.name);	
+                    
 				}
 				else if(_characterState == CharacterState.Walking) {
 					_animation[walkAnimation.name].speed = Mathf.Clamp(controller.velocity.magnitude, 0.0, walkMaxAnimationSpeed);

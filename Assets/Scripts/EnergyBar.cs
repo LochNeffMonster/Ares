@@ -4,6 +4,7 @@ using System.Collections;
 public class EnergyBar : MonoBehaviour {
 
 	public GameObject roverObj; //For its transform and location
+	public ThirdPersonController roverControl;
 	private float curEnergy = 200;
 	private float maxEnergy = 200;
 	private Vector2 position = new Vector2(50, 50);

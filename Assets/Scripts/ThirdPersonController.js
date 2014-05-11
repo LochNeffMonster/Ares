@@ -153,6 +153,14 @@ function OnTriggerEnter(other : Collider){
         rightParticles.startColor = lightColor;
         currentColor = lightColor;
     }
+    if (other.gameObject.tag == "wallOfDeath"){
+    	Debug.Log(inCavelight, gameObject);
+    	Debug.Log("YOU HIT THE DEATHWALL!!!!");
+        
+        //Add death animations or sound, and pause here
+        //this should go to the you lose screen
+        Application.LoadLevel("mainMenu");
+    }
 }
 
 function UpdateSmoothedMovementDirection ()

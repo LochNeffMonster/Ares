@@ -15,6 +15,9 @@ public var landAnimationSpeed : float = 1.0;
 
 private var _animation : Animation;
 
+//Boolean values for whether the Rover is in a Cavelight
+public var inCavelight : boolean = false;
+
 enum CharacterState {
 	Idle = 0,
 	Walking = 1,
@@ -134,6 +137,8 @@ public var jumpPoseAnimation : AnimationClip;
 function OnTriggerExit (other : Collider) {
     Debug.Log ("Hello", gameObject);
 	if (other.gameObject.tag == "Cavelight"){
+		inCavelight = false;
+		Debug.Log(inCavelight, gameObject);
         leftParticles.startColor = shadowColor;
         rightParticles.startColor = shadowColor;
         currentColor = shadowColor;
@@ -142,6 +147,8 @@ function OnTriggerExit (other : Collider) {
 function OnTriggerEnter(other : Collider){
     Debug.Log ("Hello", gameObject);
     if (other.gameObject.tag == "Cavelight"){
+    	inCavelight = true;
+    	Debug.Log(inCavelight, gameObject);
         leftParticles.startColor = lightColor;
         rightParticles.startColor = lightColor;
         currentColor = lightColor;

@@ -1,8 +1,9 @@
 ﻿#pragma strict
 
 	public var roverObj : GameObject; //For its transform and location
-	private var curEnergy : float = 200;
-	private var maxEnergy : float = 200;
+	public var curEnergy : float = 200;
+	public var maxEnergy : float = 200;
+    public var isCharging : boolean = false;
 	private var position : Vector2= new Vector2(50, 50);
 	private var size : Vector2 = new Vector2(200, 20);
 	public var roverControl : ThirdPersonController;
@@ -43,13 +44,16 @@
 				} else {
 					curEnergy -= decayRate;
 				}
-			}
+            isCharging = false;
+        }
 		else {
 			//The Rover is in Cavelight				
 			if(curEnergy < maxEnergy) {
+                isCharging = true;
 				curEnergy += decayRate;
 			} else {
 				curEnergy = maxEnergy;
+                isCharging = false;
 		}
 	}
 	

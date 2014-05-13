@@ -3,7 +3,11 @@
 public var xMods:int[];
 public var buttonText:String[];
 public var loadLevel:String[];
+var sfxObject:GameObject;
 
+function Awake (){
+    sfxObject = GameObject.Find("SFXManager");    
+}
 
 function OnGUI()
 {
@@ -27,6 +31,7 @@ function OnGUI()
 		{
 			// On Click, load the first level.
 			// "Stage1" is the name of the first scene we created.
+            sfxObject.GetComponent(SFXManager).RequestPing();
 			Application.LoadLevel(loadLevel[i]);
 		}
 

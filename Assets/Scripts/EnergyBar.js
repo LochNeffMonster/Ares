@@ -57,6 +57,7 @@
 		//Game Over
 		//Need this check here for testing
 		curEnergy = 0;
+		Application.LoadLevel("mainMenu");
 	}
 
 }

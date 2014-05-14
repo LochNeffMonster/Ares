@@ -6,15 +6,7 @@ var normRot : float;
 
 public var compassCamera : GameObject;
  
-function Start () {
-    playerObject = GameObject.FindWithTag("Player");
-}
- 
- 
 function Update () { 
-    
-    if (playerObject == null || compassCamera == null)
-    	Start();
     
     normRot = Mathf.Abs(playerObject.transform.eulerAngles.y); 
     //Debug.Log(normRot + " Comp: " + transform.eulerAngles.x);

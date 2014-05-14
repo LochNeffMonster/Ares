@@ -10,7 +10,8 @@
 	public var emptyBar : Texture2D;
 	public var fullBar : Texture2D;
 	public var icon : Texture2D;
-	private var decayRate : float = 0.05f;
+	public var decayRate : float = 0.05f;
+	public var rechargeRate: float = 0.5f;
 	
 	
 	private var temp : boolean;
@@ -39,18 +40,17 @@
 		//The Rover isn't in any cavelight
 		if(!roverControl.inCavelight) {
 			//We lose Energy at a defined Rate
+			//changes have been moved to ThirdPersonController.js
 			if (curEnergy > maxEnergy) {
 					curEnergy = maxEnergy;
-				} else {
-					curEnergy -= decayRate;
-				}
+				} 
             isCharging = false;
         }
 		else {
 			//The Rover is in Cavelight				
 			if(curEnergy < maxEnergy) {
                 isCharging = true;
-				curEnergy += decayRate;
+				curEnergy += rechargeRate;
 			} else {
 				curEnergy = maxEnergy;
                 isCharging = false;

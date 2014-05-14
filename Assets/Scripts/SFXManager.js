@@ -8,6 +8,7 @@ public var listenerObject:GameObject;
 function Awake () {
     DontDestroyOnLoad(gameObject);
     sfxSource = gameObject.AddComponent(AudioSource);
+    sfxSource.volume = 0.7f;
     confirmPing = Resources.Load("Audio/ConfirmPing") as AudioClip;
     listener = FindObjectOfType(AudioListener);
     listenerObject = listener.gameObject;

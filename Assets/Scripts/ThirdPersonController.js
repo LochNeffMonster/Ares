@@ -159,7 +159,7 @@ function OnTriggerEnter(other : Collider){
         
         //Add death animations or sound, and pause here
         //this should go to the you lose screen
-        Application.LoadLevel("mainMenu");
+        Application.LoadLevel("defeatScreen");
     }
 }
 

@@ -11,7 +11,7 @@ function Awake () {
     confirmPing = Resources.Load("Audio/ConfirmPing") as AudioClip;
     listener = FindObjectOfType(AudioListener);
     listenerObject = listener.gameObject;
-    gameObject.transform.position = listenerObject.transform.position;
+    gameObject.transform.position = listenerObject.transform.position; 
 }
 
 function Start () {

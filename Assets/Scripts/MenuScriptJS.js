@@ -6,7 +6,14 @@ public var loadLevel:String[];
 var sfxObject:GameObject;
 
 function Awake (){
-    sfxObject = GameObject.Find("SFXManager");    
+    if(GameObject.Find("SFXManager") == null){
+        sfxObject = new GameObject();
+        sfxObject.name = "SFXManager";
+        sfxObject.AddComponent(SFXManager);
+    }else{
+        sfxObject = GameObject.Find("SFXManager");
+    }
+        
 }
 
 function OnGUI()

@@ -8,10 +8,12 @@
 	public var lookDirection : Vector3;
 	private var velocityCamSmooth : Vector3 = Vector3.zero;
 	private var camSmoothDampTime : float = 0.1f;
+	public var roverObject : ThirdPersonController;
 
 	// Use this for initialization
 	function Start () {
 		followXform = GameObject.FindWithTag ("Player").transform;
+		roverObject = GameObject.FindWithTag("Player").GetComponent(ThirdPersonController);
 	}
 
 	function LateUpdate () {
@@ -28,6 +30,9 @@
 		//Debug.DrawRay (followXform.position, Vector3.up * distanceUp, Color.red);
 		//Debug.DrawRay (followXform.position, -1f * followXform.forward * distanceAway, Color.blue);
 		//Debug.DrawLine (followXform.position, targetPosition, Color.green);
+		if(Input.GetKey(KeyCode.F) && !roverObject.isMoving) {
+		targetPosition = roverOffset + followXform.up * distanceUp - followXform.forward * distanceAway;
+		}
 
 		compensateTerrainCollision (roverOffset, targetPosition);
 		//transform.position = Vector3.Lerp (transform.position, targetPosition, Time.deltaTime * smooth);
@@ -46,4 +51,4 @@
 		if (Physics.Linecast (from, to)) {
 			to = new Vector3(hit.point.x, to.y, hit.point.z); 
 			}
-}
+	}

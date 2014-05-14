@@ -14,6 +14,7 @@ public var jumpAnimationSpeed : float = 1.15;
 public var landAnimationSpeed : float = 1.0;
 
 private var _animation : Animation;
+private var health : EnergyBar;
 
 //Boolean values for whether the Rover is in a Cavelight
 public var inCavelight : boolean = false;
@@ -79,7 +80,7 @@ private var jumpingReachedApex = false;
 // Are we moving backwards (This locks the camera to not do a 180 degree spin)
 private var movingBack = false;
 // Is the user pressing any keys?
-private var isMoving = false;
+public var isMoving = false;
 // When did the user start walking (Used for going into trot after a while)
 private var walkTimeStart = 0.0;
 // Last time the jump button was clicked down
@@ -102,6 +103,11 @@ private var isControllable = true;
 
 function Awake ()
 {
+	health = GameObject.FindWithTag("health").GetComponent(EnergyBar);
+	if(health == null) {
+		Debug.Log("Somehow this is null", gameObject);
+	}
+	
 	moveDirection = transform.TransformDirection(Vector3.forward);
     
 	
@@ -135,26 +141,26 @@ public var jumpPoseAnimation : AnimationClip;
 }
 
 function OnTriggerExit (other : Collider) {
-    Debug.Log ("Hello", gameObject);
+   
 	if (other.gameObject.tag == "Cavelight"){
 		inCavelight = false;
-		Debug.Log(inCavelight, gameObject);
+		
         leftParticles.startColor = shadowColor;
         rightParticles.startColor = shadowColor;
         currentColor = shadowColor;
     }
 }
 function OnTriggerEnter(other : Collider){
-    Debug.Log ("Hello", gameObject);
+  
     if (other.gameObject.tag == "Cavelight"){
     	inCavelight = true;
-    	Debug.Log(inCavelight, gameObject);
+    
         leftParticles.startColor = lightColor;
         rightParticles.startColor = lightColor;
         currentColor = lightColor;
     }
     if (other.gameObject.tag == "wallOfDeath"){
-    	Debug.Log(inCavelight, gameObject);
+    	
     	Debug.Log("YOU HIT THE DEATHWALL!!!!");
         
         //Add death animations or sound, and pause here
@@ -445,6 +451,23 @@ function Update() {
 			SendMessage("DidLand", SendMessageOptions.DontRequireReceiver);
 		}
 	}
+	
+	Debug.Log(_characterState, gameObject);
+	//Here is where we decrease the energy based on the Character State
+	//Assuming that only one CharacterState is active at a time
+	if(_characterState == CharacterState.Walking) {
+		//health.curEnergy -= health.decayRate;
+	}
+	 else if(_characterState == CharacterState.Jumping) {
+		health.curEnergy -= health.decayRate * 2;
+	}
+	else if(_characterState == CharacterState.Trotting) {
+		health.curEnergy -= health.decayRate * 1.2;
+	}
+	else if(_characterState == CharacterState.Running) {
+		health.curEnergy -= health.decayRate * 1.5;
+	}
+	
 }
 
 function OnControllerColliderHit (hit : ControllerColliderHit )
@@ -452,6 +475,15 @@ function OnControllerColliderHit (hit : ControllerColliderHit )
 //	Debug.DrawRay(hit.point, hit.normal);
 	if (hit.moveDirection.y > 0.01) 
 		return;
+	
+	//This is for making sure the player cannot jump up steep slopes	
+	 if(hit.normal.y <= 0.8) {    
+ 		canJump = false;
+    } else {
+    	canJump = true;
+    }
+ 	
+		
 }
 
 function GetSpeed () {

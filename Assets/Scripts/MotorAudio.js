@@ -11,7 +11,7 @@ private var pitchModifier:float;
 @script RequireComponent(AudioSource)
 function Start() {
     audio.pitch = pitchMinimum;
-}
+}  
 function Awake() {
     if(GetComponent(Rigidbody) != null){
         roverBody = GetComponent(Rigidbody);

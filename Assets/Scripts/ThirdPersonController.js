@@ -207,7 +207,7 @@ function UpdateSmoothedMovementDirection ()
 	if (grounded)
 	{
 		// Lock camera for short period when transitioning moving & standing still
-		lockCameraTimer += Time.deltaTime;
+		lockCameraTimer += Time.smoothDeltaTime;
 		if (isMoving != wasMoving)
 			lockCameraTimer = 0.0;
 
@@ -224,14 +224,14 @@ function UpdateSmoothedMovementDirection ()
 			// Otherwise smoothly turn towards it
 			else
 			{
-				moveDirection = Vector3.RotateTowards(moveDirection, targetDirection, rotateSpeed * Mathf.Deg2Rad * Time.deltaTime, 1000);
+				moveDirection = Vector3.RotateTowards(moveDirection, targetDirection, rotateSpeed * Mathf.Deg2Rad * Time.smoothDeltaTime, 1000);
 				
 				moveDirection = moveDirection.normalized;
 			}
 		}
 		
 		// Smooth the speed based on the current target direction
-		var curSmooth = speedSmoothing * Time.deltaTime;
+		var curSmooth = speedSmoothing * Time.smoothDeltaTime;
 		
 		// Choose target speed
 		//* We want to support analog input but make sure you cant walk faster diagonally than just forward or sideways
@@ -283,7 +283,7 @@ function UpdateSmoothedMovementDirection ()
 			lockCameraTimer = 0.0;
 
 		if (isMoving)
-			inAirVelocity += targetDirection.normalized * Time.deltaTime * inAirControlAcceleration;
+			inAirVelocity += targetDirection.normalized * Time.smoothDeltaTime * inAirControlAcceleration;
 	}
 	
 
@@ -292,7 +292,8 @@ function UpdateSmoothedMovementDirection ()
 
 function OnGUI(){
 
-	//GUI.Label (Rect (10, 50, 200, 40), "Ground: " + IsGroundedWithTimeout());
+	GUI.Label (Rect (10, 90, 200, 40), "Ground: " + IsGroundedWithTimeout());
+	GUI.Label (Rect (10, 130, 200, 40), "FrameRate: " + m_lastFramerate);
 }
 
 
@@ -332,11 +333,11 @@ function ApplyGravity ()
 		/*if (IsGrounded ())
 			verticalSpeed = 0.0;
 		else
-			verticalSpeed -= gravity * Time.deltaTime;*/
+			verticalSpeed -= gravity * Time.smoothDeltaTime;*/
 		if (IsGrounded()){
-	        verticalSpeed = -gravity * Time.deltaTime;
+	        verticalSpeed = -gravity * Time.smoothDeltaTime;
 	    } else {
-	        verticalSpeed -= gravity * Time.deltaTime;
+	        verticalSpeed -= gravity * Time.smoothDeltaTime;
 	    }
     }
 
@@ -361,6 +362,8 @@ function DidJump ()
 }
 
 function Update() {
+	
+	calcFrames();
 	
 	if (!isControllable)
 	{
@@ -387,7 +390,7 @@ function Update() {
 	
 	// Calculate actual motion
 	var movement = moveDirection * moveSpeed + Vector3 (0, verticalSpeed, 0) + inAirVelocity;
-	movement *= Time.deltaTime;
+	movement *= Time.smoothDeltaTime;
     
 
     
@@ -544,4 +547,29 @@ function Reset ()
 {
 	gameObject.tag = "Player";
 }
+
+//===================================================
+//Framerate testing
+//Declare these in your class
+var m_frameCounter = 0;
+var m_timeCounter = 0.0f;
+var m_lastFramerate = 0.0f;
+public var m_refreshTime = 0.5f;
+ 
+function calcFrames()
+{
+    if( m_timeCounter < m_refreshTime )
+    {
+        m_timeCounter += Time.deltaTime;
+        m_frameCounter++;
+    }
+    else
+    {
+        //This code will break if you set your m_refreshTime to 0, which makes no sense.
+        m_lastFramerate = m_frameCounter/m_timeCounter;
+        m_frameCounter = 0;
+        m_timeCounter = 0.0f;
+    }
+}
+//====================================
 

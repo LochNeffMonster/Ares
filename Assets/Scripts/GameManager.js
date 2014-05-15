@@ -8,8 +8,9 @@
  
  static var instance : GameManager;
  static var label : GameObject;
- public static var gameTime = 0f;
- public static var timePaused = true;
+ public var gameTime = 0f;
+ public var timePaused = true;
+ public var displayTime = false;
  
  
  // This is where the magic happens.
@@ -28,8 +29,15 @@
  // Add the rest of the code here...
  
  function OnGUI(){
+ 	
+ 	if (displayTime)
+ 		GUI.Label (Rect (10, 10, 100, 20), "Time: " + Mathf.FloorToInt(gameTime));
+ }
  
- 	GUI.Label (Rect (10, 10, 100, 20), "Time: " + gameTime);
+ function Update(){
+ 
+ 	if (!timePaused)
+ 		gameTime += Time.deltaTime;
  
  }
  
@@ -41,9 +49,8 @@
  	timePaused = onOrOff;
  }
  
- function Update(){
- 	if (!timePaused)
- 		gameTime += Time.deltaTime;
+ function showHideTime(onOrOff){
+ 	displayTime = onOrOff;
  }
  
  function uploadTime() {

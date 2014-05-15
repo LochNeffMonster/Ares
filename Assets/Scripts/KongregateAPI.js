@@ -40,7 +40,7 @@ function displaySubmitScore(){
 		buttonWidth,
 		buttonHeight
 		),
-		"Submit Score"
+		"Submit Time"
 		)
 		)
 	{

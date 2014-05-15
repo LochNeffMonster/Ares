@@ -18,6 +18,7 @@ private var health : EnergyBar;
 
 //Boolean values for whether the Rover is in a Cavelight
 public var inCavelight : boolean = false;
+var distToGround: float;
 
 enum CharacterState {
 	Idle = 0,
@@ -107,7 +108,7 @@ function Awake ()
 	if(health == null) {
 		Debug.Log("Somehow this is null", gameObject);
 	}
-	
+	distToGround = collider.bounds.extents.y;
 	moveDirection = transform.TransformDirection(Vector3.forward);
     
 	
@@ -172,7 +173,7 @@ function OnTriggerEnter(other : Collider){
 function UpdateSmoothedMovementDirection ()
 {
 	var cameraTransform = Camera.main.transform;
-	var grounded = IsGrounded();
+	var grounded = IsGroundedWithTimeout();
 	
 	// Forward vector relative to the camera along the x-z plane	
 	var forward = cameraTransform.TransformDirection(Vector3.forward);
@@ -289,6 +290,11 @@ function UpdateSmoothedMovementDirection ()
 		
 }
 
+function OnGUI(){
+
+	//GUI.Label (Rect (10, 50, 200, 40), "Ground: " + IsGroundedWithTimeout());
+}
+
 
 function ApplyJumping ()
 {
@@ -296,7 +302,7 @@ function ApplyJumping ()
 	if (lastJumpTime + jumpRepeatTime > Time.time)
 		return;
 
-	if (IsGrounded()) {
+	if (IsGroundedWithTimeout()) {
 		// Jump
 		// - Only when pressing the button down
 		// - With a timeout so you can press the button slightly before landing		
@@ -323,11 +329,17 @@ function ApplyGravity ()
 			SendMessage("DidJumpReachApex", SendMessageOptions.DontRequireReceiver);
 		}
 	
-		if (IsGrounded ())
+		/*if (IsGrounded ())
 			verticalSpeed = 0.0;
 		else
-			verticalSpeed -= gravity * Time.deltaTime;
-	}
+			verticalSpeed -= gravity * Time.deltaTime;*/
+		if (IsGrounded()){
+	        verticalSpeed = -gravity * Time.deltaTime;
+	    } else {
+	        verticalSpeed -= gravity * Time.deltaTime;
+	    }
+    }
+
 }
 
 function CalculateJumpVerticalSpeed (targetJumpHeight : float)
@@ -424,7 +436,7 @@ function Update() {
 	// ANIMATION sector
 	
 	// Set rotation to the move direction
-	if (IsGrounded())
+	if (IsGroundedWithTimeout())
 	{
 		
 		transform.rotation = Quaternion.LookRotation(moveDirection);
@@ -495,6 +507,8 @@ function IsJumping () {
 }
 
 function IsGrounded () {
+	//return Physics.CheckCapsule(collider.bounds.center,new Vector3(collider.bounds.center.x,collider.bounds.min.y-1,collider.bounds.center.z),0.1f);
+	//return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.35);
 	return (collisionFlags & CollisionFlags.CollidedBelow) != 0;
 }
 

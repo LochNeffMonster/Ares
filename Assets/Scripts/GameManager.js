@@ -59,7 +59,7 @@
 			gameTime = 0f;
 			timePaused = true;
 			kong.displayGUI = false;
-		} else if (level == 2 || 5){
+		} else if (level == 2 || level == 5){
 			displayTime = false;
 			timePaused = true;
 			kong.displayGUI = true;

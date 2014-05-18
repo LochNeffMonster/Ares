@@ -53,6 +53,7 @@ var canJump = true;
 // Use These to control the dust effects of the rover
 var leftParticles:ParticleSystem;
 var rightParticles:ParticleSystem;
+var rocketParticles:ParticleSystem;
 var currentColor:Color;
 var shadowColor:Color = currentColor;
 var lightColor:Color;
@@ -308,6 +309,9 @@ function ApplyJumping ()
 		// - Only when pressing the button down
 		// - With a timeout so you can press the button slightly before landing		
 		if (canJump && Time.time < lastJumpButtonTime + jumpTimeout) {
+            rocketParticles.Play();
+            rocketParticles.playbackSpeed = rocketParticles.startSpeed;
+            Debug.Log("jumped");
 			verticalSpeed = CalculateJumpVerticalSpeed (jumpHeight);
 			SendMessage("DidJump", SendMessageOptions.DontRequireReceiver);
 		}
@@ -326,6 +330,7 @@ function ApplyGravity ()
 		// When we reach the apex of the jump we send out a message
 		if (jumping && !jumpingReachedApex && verticalSpeed <= 0.0)
 		{
+            rocketParticles.Stop();
 			jumpingReachedApex = true;
 			SendMessage("DidJumpReachApex", SendMessageOptions.DontRequireReceiver);
 		}
@@ -467,7 +472,7 @@ function Update() {
 		}
 	}
 	
-	Debug.Log(_characterState, gameObject);
+	//Debug.Log(_characterState, gameObject);
 	//Here is where we decrease the energy based on the Character State
 	//Assuming that only one CharacterState is active at a time
 	if(_characterState == CharacterState.Walking) {

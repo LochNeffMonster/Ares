@@ -54,6 +54,8 @@ var canJump = true;
 var leftParticles:ParticleSystem;
 var rightParticles:ParticleSystem;
 var rocketParticles:ParticleSystem;
+var rocketBoostSound:AudioClip;
+var rocketBoostVolumePercent:float = 0.2f;
 var currentColor:Color;
 var shadowColor:Color = currentColor;
 var lightColor:Color;
@@ -106,6 +108,7 @@ private var isControllable = true;
 function Awake ()
 {
 	health = GameObject.FindWithTag("health").GetComponent(EnergyBar);
+    rocketBoostSound = Resources.Load("Audio/RocketBoost") as AudioClip;
 	if(health == null) {
 		Debug.Log("Somehow this is null", gameObject);
 	}
@@ -310,6 +313,7 @@ function ApplyJumping ()
 		// - With a timeout so you can press the button slightly before landing		
 		if (canJump && Time.time < lastJumpButtonTime + jumpTimeout) {
             rocketParticles.Play();
+            AudioSource.PlayClipAtPoint(rocketBoostSound, transform.position, rocketBoostVolumePercent);
             rocketParticles.playbackSpeed = rocketParticles.startSpeed;
             Debug.Log("jumped");
 			verticalSpeed = CalculateJumpVerticalSpeed (jumpHeight);
